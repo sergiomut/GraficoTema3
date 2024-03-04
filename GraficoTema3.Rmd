@@ -1,0 +1,49 @@
+---
+title: "GraficoTema3"
+author: "Irene Gómez, Julia Canós, Laura Beltrán, Sergio Mut"
+date: "2024-03-04"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#cargamos las librerías necesarias
+library(ggplot2)
+library(readr)
+#primero de todo importamos el excel con el import dataset from readr, para visualizar bien los datos del excel.
+#llamamos con la variable f a nuestro csv con la información de los países y posteriormente lo leemos con la función read_csv
+f <- "owid-covid-data.csv"
+datos<- read_csv(f)
+
+#creamos una variable paises que es un vector que contiene todos los países con los que queremos trabajar, que son los mismos que la imagen del ejemplo pero añadiendo también españa.
+
+paises<- c("United States", "Japan", "Canada", "Spain", "Italy", "France", "Germany", "United Kingdom" )
+
+#creamos una variable que hará que de todos los países que hay en el csv, trabajemos solo con esos. Comparando que si estos países están en la variable location de nuestro csv, trabaje con ellas.
+seleccion_paises <- datos[datos$location %in% paises , ]
+
+#creamos una gráfica, en la cual nuestro conjunto de datos va a ser la variable selección_paises que contiene los países que vamos a usar. Llamamos a x= dates, ya que en el dibujo vemos que en este eje están las fechas. Llamamos a y=new_cases_smoothed ya que aquí están los datos actualizados del número de nuevos casos de COVID. Ponemos geom_line() ya que queremos un gráfico de lineas.
+#usamos la variable scale_color_manual para asignar a cada país un color. Para terminar de asignarselo metemos en el aes, color=location para que se le asigne el color a esta variable. 
+#Usamos geom_line, para hacer la línea de España más gruesa que las demás. Esto lo conseguimos con data=subset()
+#usamos ggtitle() para asignarle al gráfico el nombre de nuestro grupo
+
+
+grafica<- ggplot(seleccion_paises, aes(x=date, y= new_cases_smoothed,color=location)) + geom_line() + scale_color_manual(values=c("Spain" = "red","United States" = "purple",  "Italy" = "cyan", "France" = "orange", "Canada" = "brown", "Germany" = "green", "Japan" = "blue", "United Kingdom" = "pink")) + geom_line(data= subset(seleccion_paises, location=="Spain"),size=1) + ggtitle("Grupo P")
+grafica
+
+#lo guardamos en un pdf
+ggsave('./GraficoTema3.pdf')
+
+
+
+
+
+```
+
+
+
